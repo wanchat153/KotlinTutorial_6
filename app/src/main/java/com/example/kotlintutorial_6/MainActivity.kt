@@ -1,5 +1,6 @@
 package com.example.kotlintutorial_6
 
+import android.media.VolumeShaper
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -15,7 +16,7 @@ class MainActivity : AppCompatActivity() {
 
     private var operand1: Double? = null
     private var operand2: Double = 0.0
-    private var pendingOption = "="
+    private var pendingOperation = "="
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,5 +59,27 @@ class MainActivity : AppCompatActivity() {
         button8.setOnClickListener(listener)
         button9.setOnClickListener(listener)
         buttonDot.setOnClickListener(listener)
+
+        val opListener = View.OnClickListener { v ->
+            val op = (v as Button).text.toString()
+            val value = newNumber.text.toString()
+            if (value.isNotEmpty()){
+                performOperation(value, op)
+            }
+
+            pendingOperation = op
+            displayOperation.text = pendingOperation
+        }
+
+        buttonEquals.setOnClickListener(opListener)
+        buttonDivide.setOnClickListener(opListener)
+        buttonMultiply.setOnClickListener(opListener)
+        buttonMinus.setOnClickListener(opListener)
+        buttonPlus.setOnClickListener(opListener)
+
+    }
+
+    private fun performOperation(value: String, operation: String){
+        displayOperation.text = operation
     }
 }
