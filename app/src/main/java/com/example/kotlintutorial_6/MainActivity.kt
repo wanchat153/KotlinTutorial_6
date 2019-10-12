@@ -1,13 +1,17 @@
 package com.example.kotlintutorial_6
 
-import android.media.VolumeShaper
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import java.lang.NumberFormatException
+
+private const val STATE_PENDING_OPERATION = "PendingOperation"
+private const val STATE_OPERAND1 = "Operand1"
+private const val STATE_OPERAND1_STORED = "Operand1_Stored"
 
 class MainActivity : AppCompatActivity() {
 
@@ -105,5 +109,26 @@ class MainActivity : AppCompatActivity() {
 
         result.setText(operand1.toString())
         newNumber.setText("")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        if (operand1 != null){
+            outState.putDouble(STATE_OPERAND1, operand1!!)
+            outState.putBoolean(STATE_OPERAND1_STORED, true)
+        }
+        outState.putString(STATE_PENDING_OPERATION, pendingOperation)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        operand1 = if (savedInstanceState.getBoolean(STATE_OPERAND1_STORED, false)){
+            savedInstanceState.getDouble(STATE_OPERAND1)
+        }else{
+            null
+        }
+
+        pendingOperation = savedInstanceState.getString(STATE_PENDING_OPERATION).toString()
+        displayOperation.text = pendingOperation
     }
 }
